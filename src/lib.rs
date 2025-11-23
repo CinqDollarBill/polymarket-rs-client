@@ -78,18 +78,24 @@ impl ClobClient {
         }
     }
 
-    pub fn with_l2_headers(host: &str, key: &str, chain_id: u64, api_creds: ApiCreds) -> Self {
+    pub fn with_l2_headers(host: &str, key: &str, chain_id: u64, api_creds: ApiCreds, proxy_wallet_address: &str,) -> Self {
         let signer = Box::new(
             key.parse::<PrivateKeySigner>()
                 .expect("Invalid private key"),
         );
+
+        let sig_type = SigType::PolyGnosisSafe;
+        let funder_address: Address = proxy_wallet_address
+            .parse()
+            .expect("Invalid proxy wallet address format");
+        
         Self {
             host: host.to_owned(),
             http_client: Client::new(),
             signer: Some(signer.clone()),
             chain_id: Some(chain_id),
             api_creds: Some(api_creds),
-            order_builder: Some(OrderBuilder::new(signer, None, None)),
+            order_builder: Some(OrderBuilder::new(signer, Some(sig_type), Some(funder_address))),
         }
     }
     pub fn set_api_creds(&mut self, api_creds: ApiCreds) {
