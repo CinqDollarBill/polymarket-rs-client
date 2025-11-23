@@ -49,18 +49,26 @@ impl ClobClient {
             ..Default::default()
         }
     }
-    pub fn with_l1_headers(host: &str, key: &str, chain_id: u64) -> Self {
+    
+    pub fn with_l1_headers_proxy(
+        host: &str, 
+        key: &str, 
+        chain_id: u64, 
+        proxy_wallet_address: &str, 
+        signature_type: u8
+    ) -> Self {
         let signer = Box::new(
             key.parse::<PrivateKeySigner>()
                 .expect("Invalid private key"),
         );
+        
         Self {
             host: host.to_owned(),
             http_client: Client::new(),
             signer: Some(signer.clone()),
             chain_id: Some(chain_id),
             api_creds: None,
-            order_builder: Some(OrderBuilder::new(signer, None, None)),
+            order_builder: Some(OrderBuilder::new(signer, Some(proxy_wallet_address), Some(signature_type))),
         }
     }
 
