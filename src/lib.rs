@@ -57,7 +57,6 @@ impl ClobClient {
         key: &str, 
         chain_id: u64, 
         proxy_wallet_address: &str, 
-        signature_type: u8
     ) -> Self {
         let signer = Box::new(
             key.parse::<PrivateKeySigner>()
@@ -65,7 +64,6 @@ impl ClobClient {
         );
 
         let sig_type = SigType::PolyProxy;
-
         let funder_address: Address = proxy_wallet_address
             .parse()
             .expect("Invalid proxy wallet address format");
