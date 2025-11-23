@@ -119,7 +119,7 @@ impl OrderBuilder {
         sig_type: Option<SigType>,
         funder: Option<Address>,
     ) -> Self {
-        let sig_type = sig_type.unwrap_or(SigType::Eoa);
+        let sig_type = sig_type.unwrap_or(SigType::PolyProxy);
         let funder = funder.unwrap_or(signer.address());
 
         OrderBuilder {
