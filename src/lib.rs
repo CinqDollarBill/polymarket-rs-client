@@ -63,7 +63,7 @@ impl ClobClient {
                 .expect("Invalid private key"),
         );
 
-        let sig_type = SigType::PolyProxy;
+        let sig_type = SigType::PolyGnosisSafe;
         let funder_address: Address = proxy_wallet_address
             .parse()
             .expect("Invalid proxy wallet address format");
