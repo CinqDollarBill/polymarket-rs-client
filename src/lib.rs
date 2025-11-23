@@ -61,6 +61,12 @@ impl ClobClient {
             key.parse::<PrivateKeySigner>()
                 .expect("Invalid private key"),
         );
+
+        let sig_type = SigType::PolyProxy;
+
+        let funder_address: Address = proxy_wallet_address
+            .parse()
+            .expect("Invalid proxy wallet address format");
         
         Self {
             host: host.to_owned(),
@@ -68,7 +74,7 @@ impl ClobClient {
             signer: Some(signer.clone()),
             chain_id: Some(chain_id),
             api_creds: None,
-            order_builder: Some(OrderBuilder::new(signer, Some(proxy_wallet_address), Some(signature_type))),
+            order_builder: Some(OrderBuilder::new(signer, Some(sig_type), Some(funder_address))),
         }
     }
 
