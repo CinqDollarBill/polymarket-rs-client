@@ -13,6 +13,8 @@ use rust_decimal::Decimal;
 pub use serde_json::Value;
 use std::collections::HashMap;
 
+use crate::orders::SigType;
+use alloy_primitives::Address;
 // #[cfg(test)]
 // mod tests;
 
