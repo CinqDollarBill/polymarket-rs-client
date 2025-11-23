@@ -26,26 +26,35 @@ pub fn build_hmac_signature<T>(
 where
     T: ?Sized + Serialize,
 {
+    // 1. Base64 URL-safe decode the secret key.
     let decoded = URL_SAFE
         .decode(secret)
         .context("Can't decode secret to base64")?;
+
     let message = match body {
-        None => format!("{timestamp}{method}{req_path}"),
+        None => {
+            // Case 1: No body (e.g., GET requests)
+            format!("{timestamp}{method}{req_path}")
+        }
         Some(s) => {
-            // We format like str(dict) in python
-            let s = JsonFormat::new()
-                .comma(", ")?
-                .colon(": ")?
-                .format_to_string(&s)?;
-            format!("{timestamp}{method}{req_path}{s}")
+            // Case 2: Request has a body (e.g., POST /order)
+            // CRITICAL FIX: Use serde_json to produce the compact, canonical JSON string
+            let json_body_string = serde_json::to_string(&s)
+                .context("Failed to serialize request body to canonical JSON")?;
+
+            // The signature message is concatenated without separation
+            format!("{timestamp}{method}{req_path}{json_body_string}")
+            // 
         }
     };
 
+    // 2. Compute HMAC-SHA256
     let mut mac = HmacSha256::new_from_slice(&decoded).context("HMAC init error")?;
     mac.update(message.as_bytes());
 
     let result = mac.finalize();
 
+    // 3. Encode the resulting hash (byte array) back to base64 URL-safe.
     Ok(URL_SAFE.encode(&result.into_bytes()[..]))
 }
 
