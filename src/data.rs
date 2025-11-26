@@ -296,7 +296,7 @@ impl OrderType {
         match self {
             OrderType::GTC => "GTC",
             OrderType::FOK => "FOK",
-            OrderType::FOK => "FAK",
+            OrderType::FAK => "FAK",
             OrderType::GTD => "GTD",
         }
     }
