@@ -523,25 +523,29 @@ impl ClobClient {
 
     pub async fn post_orders(
         &self,
-        order: SignedOrderRequest,
+        orders: Vec<SignedOrderRequest>,
         order_type: OrderType,
     ) -> ClientResult<Value> {
         let (signer, creds) = self.get_l2_parameters();
     
-        // build a single PostOrder request
-        let single = PostOrder::new(order, creds.api_key.clone(), order_type);
-    
-        // wrap it into an array for /orders endpoint
-        let body = PostOrders::new(single);
+        let body = PostOrders::new(orders, creds.api_key.clone(), order_type);
     
         let method = Method::POST;
         let endpoint = "/orders";
     
-        let headers =
-            create_l2_headers(signer, creds, method.as_str(), endpoint, Some(&body))?;
+        let headers = create_l2_headers(
+            signer,
+            creds,
+            method.as_str(),
+            endpoint,
+            Some(&body),
+        )?;
     
-        let req =
-            self.create_request_with_headers(method, endpoint, headers.into_iter());
+        let req = self.create_request_with_headers(
+            method,
+            endpoint,
+            headers.into_iter(),
+        );
     
         Ok(req.json(&body).send().await?.json::<Value>().await?)
     }
