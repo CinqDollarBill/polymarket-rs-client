@@ -68,6 +68,23 @@ pub struct SignedOrderRequest {
     pub signature: String,
 }
 
+#[derive(Serialize)]
+pub struct PostOrder {
+    pub order: SignedOrderRequest,
+    pub apiKey: String,
+    pub orderType: OrderType,
+}
+
+impl PostOrder {
+    pub fn new(order: SignedOrderRequest, api_key: String, order_type: OrderType) -> Self {
+        Self {
+            order,
+            apiKey: api_key,
+            orderType: order_type,
+        }
+    }
+}
+
 static ROUNDING_CONFIG: LazyLock<HashMap<Decimal, RoundConfig>> = LazyLock::new(|| {
     HashMap::from([
         (
