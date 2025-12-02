@@ -182,6 +182,24 @@ impl PostOrder {
     }
 }
 
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PostOrders {
+    orders: Vec<SignedOrderRequest>,
+    owner: String,
+    order_type: OrderType,
+}
+
+impl PostOrders {
+    pub fn new(orders: Vec<SignedOrderRequest>, owner: String, order_type: OrderType) -> Self {
+        PostOrders {
+            orders,
+            owner,
+            order_type,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct OrderArgs {
     pub token_id: String,
